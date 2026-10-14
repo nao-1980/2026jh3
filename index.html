@@ -1,0 +1,511 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>5教科ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap">
+<style>
+/* Layout: 1画面1問のシール手帳。上にログフィルム、下に大きな答えボタン */
+:root{
+  --bg:#FFF4F8; --dot:#F7D9E6; --card:#FFFFFF; --line:#F3D6E3; --shadow:#F2C4D8;
+  --ink:#43304A; --sub:#8E7A95; --pink:#FF5C9D; --pinkL:#FFE1EE; --lav:#9B7BFF; --lavL:#EEE7FF;
+  --ok:#22A884; --okL:#DDF5EE; --ng:#E8536E; --ngL:#FDE3E8; --memo:#FFF9E8; --memoLine:#E9C97A;
+  --btnEdge:#43304A; --gray:#D9CFDD;
+  --fKoku:#FF8FB8; --fMath:#B49BFF; --fEng:#7CC4FF; --fSci:#5ED3A8; --fSoc:#FFC75A; --faceInk:#43304A;
+  --head:"Mochiy Pop One","M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif;
+  --body:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1F1622; --dot:#2E2233; --card:#2B2030; --line:#45334C; --shadow:#140E16;
+  --ink:#F6E9F3; --sub:#BBA6C2; --pink:#FF86B6; --pinkL:#4A2738; --lav:#B9A2FF; --lavL:#352B4F;
+  --ok:#4FD1A9; --okL:#173A31; --ng:#FF7C93; --ngL:#45222B; --memo:#3A3122; --memoLine:#8C7440;
+  --btnEdge:#0F0A11; --gray:#4A3D50; --fKoku:#E874A1; --fMath:#9A80F2; --fEng:#5DAAE8; --fSci:#3FBB8F; --fSoc:#E9AD45; --faceInk:#2A1D2F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1F1622; --dot:#2E2233; --card:#2B2030; --line:#45334C; --shadow:#140E16;
+  --ink:#F6E9F3; --sub:#BBA6C2; --pink:#FF86B6; --pinkL:#4A2738; --lav:#B9A2FF; --lavL:#352B4F;
+  --ok:#4FD1A9; --okL:#173A31; --ng:#FF7C93; --ngL:#45222B; --memo:#3A3122; --memoLine:#8C7440;
+  --btnEdge:#0F0A11; --gray:#4A3D50; --fKoku:#E874A1; --fMath:#9A80F2; --fEng:#5DAAE8; --fSci:#3FBB8F; --fSoc:#E9AD45; --faceInk:#2A1D2F; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(var(--dot) 1.6px,transparent 1.7px);background-size:22px 22px;
+  color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.7;font-weight:700;padding-inline:16px;padding-block:12px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--head);font-weight:400;margin:0;text-wrap:balance;line-height:1.35}
+h1{font-size:1.6rem}h2{font-size:1.3rem}h3{font-size:1.1rem}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:24px;box-shadow:0 6px 0 var(--shadow);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.btn{font:inherit;font-weight:800;color:var(--ink);background:var(--card);border:2.5px solid var(--btnEdge);border-radius:999px;
+  box-shadow:0 5px 0 var(--btnEdge);padding:12px 18px;cursor:pointer;transition:transform .08s,box-shadow .08s;min-height:52px;font-size:1.05rem}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--btnEdge)}
+.btn:focus-visible,input:focus-visible{outline:3px solid var(--lav);outline-offset:3px}
+.btn.main{background:var(--pink);color:#fff}
+.btn.lav{background:var(--lav);color:#fff}
+.btn.small{min-height:40px;padding:6px 14px;font-size:.9rem;box-shadow:0 3px 0 var(--btnEdge)}
+.btn:disabled{opacity:.5;cursor:default}
+.pill{display:inline-block;border-radius:999px;padding:2px 12px;font-size:.8rem;background:var(--lavL);color:var(--lav);letter-spacing:.04em}
+.pill.pk{background:var(--pinkL);color:var(--pink)}
+.sub{color:var(--sub);font-size:.9rem;font-weight:500}
+.count{display:flex;align-items:baseline;gap:6px;font-family:var(--head)}
+.count b{font-size:2.4rem;color:var(--pink);font-weight:400;font-variant-numeric:tabular-nums}
+.subjects{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.subj{text-align:left;display:flex;flex-direction:column;gap:6px;border-radius:24px;padding:14px;min-height:auto}
+.subj .nm{font-family:var(--head);font-weight:400;font-size:1.25rem}
+.bar{height:10px;border-radius:99px;background:var(--pinkL);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--pink);border-radius:99px}
+.subj:last-child:nth-child(odd){grid-column:1/-1}
+label{font-size:.95rem}
+input[type=text]{font:inherit;font-size:1.15rem;width:100%;padding:12px 16px;border-radius:16px;border:2.5px solid var(--line);background:var(--card);color:var(--ink)}
+textarea{font:inherit;font-size:1.1rem;width:100%;padding:12px 16px;border-radius:16px;border:2.5px solid var(--line);background:var(--card);color:var(--ink);resize:vertical;line-height:1.6}
+textarea:focus-visible{outline:3px solid var(--lav);outline-offset:3px}
+textarea[readonly]{background:var(--bg)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.cmp{grid-template-columns:1fr}}
+.shiki{white-space:pre-wrap;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;background:var(--bg);border-radius:14px;padding:10px 12px;font-size:1.05rem;min-width:0}
+.shiki.ex{background:var(--memo);border:2px dashed var(--memoLine)}
+.film{display:flex;gap:6px;background:var(--ink);padding:8px 10px;border-radius:12px;overflow-x:auto}
+.film span{flex:0 0 34px;height:34px;border-radius:6px;background:var(--gray);display:grid;place-items:center;color:#fff;font-size:1.1rem}
+.film span.ok{background:var(--pink)}.film span.now{background:var(--lav)}
+.qhead{display:flex;gap:12px;align-items:center}
+.qhead svg{flex:0 0 64px}
+.qtext{font-size:1.3rem;line-height:1.6;font-weight:800}
+.choices{display:flex;flex-direction:column;gap:12px}
+.choices .btn{text-align:left;border-radius:18px;font-size:1.1rem}
+.choices .btn.ok{background:var(--okL);border-color:var(--ok);box-shadow:0 5px 0 var(--ok)}
+.choices .btn.ng{background:var(--ngL);border-color:var(--ng);box-shadow:0 5px 0 var(--ng)}
+.memo{background:var(--memo);border:2px dashed var(--memoLine);border-radius:18px;padding:12px 14px;font-weight:500}
+.fb{border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.fb.ok{background:var(--okL)}.fb.ng{background:var(--ngL)}
+.fb .big{font-family:var(--head);font-size:1.3rem}
+.fb.ok .big{color:var(--ok)}.fb.ng .big{color:var(--ng)}
+.kanji{font-size:1.6rem;letter-spacing:.1em}
+.kanji .x{color:var(--ng);text-decoration:underline wavy;text-underline-offset:6px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row .btn{flex:1 1 140px}
+.pop{animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{0%{transform:scale(.9);opacity:.4}100%{transform:scale(1);opacity:1}}
+.fall{position:fixed;top:-30px;pointer-events:none;font-size:24px;animation:fall 1.5s ease-in forwards;z-index:9}
+@keyframes fall{to{transform:translateY(105vh) rotate(260deg)}}
+.sticker{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);background:var(--pink);color:#fff;font-family:var(--head);font-size:2rem;
+  padding:14px 28px;border-radius:999px;border:3px solid var(--btnEdge);box-shadow:0 6px 0 var(--btnEdge);z-index:10;animation:purun .6s cubic-bezier(.3,1.8,.5,1)}
+@keyframes purun{0%{transform:translate(-50%,-50%) scale(.3)}100%{transform:translate(-50%,-50%) scale(1)}}
+.share{background:var(--lavL);border-radius:16px;padding:12px;white-space:pre-wrap;font-weight:500;user-select:all;overflow-wrap:anywhere}
+.pic{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:4px;align-items:center}
+.pic svg{width:100%;max-width:340px;height:auto;display:block}
+.pictag{align-self:flex-start;font-family:var(--head);font-size:.9rem;color:var(--pink)}
+.piccap{font-size:.95rem;text-align:center}
+.pic.pre svg{max-width:220px}
+body.typing .top,body.typing .film,body.typing .qhead svg,body.typing .pic.pre{display:none}
+body.typing .wrap{gap:10px}
+body.typing #qc{padding:14px;gap:10px}
+.teachcard{border-top:2px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 18px;border-radius:99px;font-size:.9rem;z-index:11}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap" id="app"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+const SUBJ={
+  koku:{nm:"国語",col:"var(--pink)",prop:"brush"},
+  math:{nm:"数学",col:"var(--lav)",prop:"ruler"},
+  eng:{nm:"英語",col:"var(--pink)",prop:"abc"},
+  sci:{nm:"理科",col:"var(--lav)",prop:"flask"},
+  soc:{nm:"社会",col:"var(--pink)",prop:"globe"}
+};
+// c[0] が正解（表示時にシャッフル）。t:"in" は書いて答える問題
+const Q=[
+// ===== 国語 =====
+{id:"K01",s:"koku",u:"漢字の書き",t:"in",a:"郵便",q:["「ゆうびん」を漢字で書こう。","手紙や荷物を届けるしくみ「ゆうびん」。漢字で書くと？","「ゆうびん局へ行く」の「ゆうびん」を漢字で！"],why:"「郵」は手紙を送る、「便」はたより・ことづて。",tip:"「垂」に「おおざと（阝）」で「郵」。右側は阝だよ。",hint:"1字目の右側は「おおざと」だよ。"},
+{id:"K02",s:"koku",u:"漢字の書き",t:"in",a:"単純",q:["「たんじゅん」を漢字で書こう。","「たんじゅんな計算ミス」の「たんじゅん」は？","しくみがかんたんなこと「たんじゅん」。漢字で！"],why:"「単」はひとつ、「純」はまじりけがない。",tip:"「純」は糸へん。「順」と書きまちがえやすいよ。",hint:"2字目は「糸へん」の字だよ。"},
+{id:"K03",s:"koku",u:"漢字の読み",c:["いちじるしい","あきらかしい","ちょしい","めざましい"],q:["「著しい」の読みは？","「成長が著しい」の「著しい」はどう読む？","次の読みを選ぼう：「著しい」"],why:"「著しい」＝いちじるしい。目立ってはっきりしているという意味。",tip:"「著者（ちょしゃ）」の「著」。訓読みは「いちじるしい」と「あらわす」。",hint:"ひらがなで6文字の読み方だよ。"},
+{id:"K04",s:"koku",u:"敬語",tg:"入試よく出る",c:["いらっしゃる","参る","伺う","お来になる"],q:["「先生が来る」を尊敬語にすると「先生が〇〇」。〇〇は？","目上の人が「来る」とき、ふさわしい尊敬語は？","「校長先生が教室に来る」。正しい尊敬語はどれ？"],why:"尊敬語は相手の動作を高める。「来る」の尊敬語は「いらっしゃる」。",tip:"「参る・伺う」は自分がへりくだる謙譲語。主語が先生なら尊敬語！",hint:"動作をしているのは先生。先生を高める言い方を選ぼう。"},
+{id:"K05",s:"koku",u:"品詞",c:["形容動詞","形容詞","副詞","連体詞"],q:["「静かな部屋」の「静かな」の品詞は？","「静かな」は何という品詞？","「教室が静かだ」「静かな教室」。この「静かだ」の品詞は？"],why:"言い切りが「静かだ」と「だ」で終わる、様子を表す言葉は形容動詞。",tip:"言い切りが「〜い」なら形容詞、「〜だ」なら形容動詞。",hint:"言い切りの形にすると何で終わるかな？"},
+{id:"K06",s:"koku",u:"熟語の構成",tg:"入試よく出る",c:["下の字が上の字の目的や対象を表す","似た意味の字を重ねる","反対の意味の字を重ねる","上の字が下の字を修飾する"],q:["「登山」の熟語の組み立ては？","熟語「登山」はどんな構成？","「登山」と同じ組み立ての熟語は「読書」。どんな構成かな？"],why:"「登山」＝山に登る。下の字が「〜を・〜に」にあたる。",tip:"下から読んで「〜を（に）〜する」になれば、このタイプ。",hint:"下の字から上の字へ読んでみよう。"},
+{id:"K07",s:"koku",u:"四字熟語",c:["一石二鳥","一朝一夕","一期一会","一心同体"],q:["ひとつのことで、ふたつの得をすること。四字熟語は？","「部活のランニングで体力もつき、通学も楽になった」。ぴったりの四字熟語は？","一度に二つの利益を得る意味の四字熟語を選ぼう。"],why:"「一石二鳥」＝石を一つ投げて鳥を二羽とる、から。",tip:"石1個で鳥2羽、と絵で思いうかべよう。",hint:"数字の「一」と「二」が入っているよ。"},
+{id:"K08",s:"koku",u:"古文",tg:"入試よく出る",c:["趣がある","おかしくて笑える","かわいそうだ","おそろしい"],q:["古文の「をかし」の意味は？","『枕草子』によく出る「をかし」。現代語に直すと？","古文で「いとをかし」とあったら、どんな気持ち？"],why:"古文の「をかし」は「趣がある・心ひかれる」。今の「おかしい」とは意味がちがう。",tip:"古文の「をかし」は明るくすてき、「あはれ」はしみじみ。",hint:"今の意味「笑える」とはちがうよ。"},
+{id:"K09",s:"koku",u:"歴史的仮名遣い",c:["いう","いふ","ゆう","いぶ"],q:["「いふ」を現代仮名遣いに直すと？","古文の「いふ」。今の書き方では？","歴史的仮名遣い「いふ」を、ひらがなで今の書き方にしよう。"],why:"語の頭以外の「は・ひ・ふ・へ・ほ」は「わ・い・う・え・お」になる。",tip:"「ふ」→「う」。「いふ」→「いう」。",hint:"2文字目の「ふ」に注目してね。"},
+{id:"K10",s:"koku",u:"慣用句",c:["とてもいそがしい","ねこが好き","手伝いはいらない","のんびりしている"],q:["「猫の手も借りたい」の意味は？","「文化祭の前日は猫の手も借りたいほどだ」。どんな様子？","慣用句「猫の手も借りたい」が表すのは？"],why:"役に立ちそうにない猫の手でも借りたいほど、人手が足りないということ。",tip:"ねこにまで頼みたい＝超いそがしい！",hint:"それくらい人手が足りない、という意味だよ。"},
+// ===== 数学 =====
+{id:"M01",s:"math",u:"正負の数",c:["17","1","−1","−17"],q:["(−3)² − 2×(−4) を計算しよう。","次の計算の答えは？ (−3)² − 2×(−4)","(−3)² − 2×(−4) ＝ ？"],why:"(−3)²＝9、2×(−4)＝−8。9−(−8)＝17。",tip:"かっこの2乗はマイナスもかける。−×−は＋！",hint:"(−3)²は(−3)×(−3)だよ。"},
+{id:"M02",s:"math",u:"平方根",tg:"入試よく出る",c:["5√3","√39","6√3","7√3"],q:["√12 + √27 を計算しよう。","√12 + √27 ＝ ？","次の式を簡単にしよう：√12 + √27"],why:"√12＝2√3、√27＝3√3。2√3＋3√3＝5√3。",tip:"ルートの中は、4・9・16などの平方数を外に出す。",hint:"12＝4×3、27＝9×3と分けてみよう。"},
+{id:"M03",s:"math",u:"因数分解",c:["(x−2)(x−3)","(x+2)(x+3)","(x−1)(x−6)","(x+1)(x−6)"],q:["x² − 5x + 6 を因数分解しよう。","因数分解すると？ x² − 5x + 6","x² − 5x + 6 ＝ ？"],why:"かけて＋6、たして−5になる2数は −2と−3。",tip:"「かけて定数、たして係数」の2数をさがす。",hint:"かけて6、たして−5になる数を見つけよう。"},
+{id:"M04",s:"math",u:"2次方程式",tg:"入試よく出る",c:["x＝2, −6","x＝−2, 6","x＝3, −4","x＝4, −3"],q:["x² + 4x − 12 ＝ 0 を解こう。","2次方程式 x² + 4x − 12 ＝ 0 の解は？","x² + 4x − 12 ＝ 0 をみたす x は？"],why:"(x+6)(x−2)＝0 なので x＝−6, 2。",tip:"まず因数分解できないか試す。だめなら解の公式。",hint:"かけて−12、たして4になる2数は？"},
+{id:"M05",s:"math",u:"関数 y＝ax²",t:"in",a:"2",q:["y＝ax² のグラフが点(2, 8)を通る。aの値は？（数字で）","放物線 y＝ax² が(2, 8)を通るとき、a＝？","点(2, 8)を通る y＝ax²。aを求めよう。"],why:"8＝a×2² → 8＝4a → a＝2。",tip:"通る点のx、yを式に入れればOK。",hint:"x＝2、y＝8を y＝ax² に入れてみよう。"},
+{id:"M06",s:"math",u:"関数 y＝ax²",tg:"入試よく出る",c:["4","2","8","3"],q:["y＝x² で、xが1から3まで増えるときの変化の割合は？","関数 y＝x²。x：1→3 の変化の割合を求めよう。","y＝x² について、xが1から3に増加するときの変化の割合は？"],why:"yは1→9で8増える。xは2増える。8÷2＝4。",tip:"変化の割合＝yの増え方÷xの増え方。",hint:"x＝1とx＝3のときのyをそれぞれ出そう。"},
+{id:"M07",s:"math",u:"確率",c:["1/6","1/12","7/36","1/9"],q:["2個のさいころを投げて、目の和が7になる確率は？","さいころ2個。出た目の合計が7になる確率を選ぼう。","大小2つのさいころを投げるとき、和が7の確率は？"],why:"全部で36通り。和が7は(1,6)〜(6,1)の6通り。6/36＝1/6。",tip:"さいころ2個は6×6＝36通り。表をかくとミスしない。",hint:"(1,6)のように組を全部書き出してみよう。"},
+{id:"M08",s:"math",u:"円",c:["50°","100°","200°","25°"],q:["中心角が100°のとき、同じ弧に対する円周角は？","円で、ある弧に対する中心角が100°。円周角は何度？","同じ弧の中心角100°。円周角を求めよう。"],why:"円周角は、同じ弧に対する中心角の半分。100÷2＝50°。",tip:"円周角＝中心角の半分。",hint:"中心角と円周角の大きさの関係を思い出そう。"},
+{id:"M09",s:"math",u:"相似",tg:"入試よく出る",c:["4：9","2：3","8：27","6：9"],q:["相似比が2：3の図形。面積の比は？","2つの相似な三角形の相似比が2：3。面積比を選ぼう。","相似比 2：3 のとき、面積比は？"],why:"面積比は相似比の2乗。2²：3²＝4：9。",tip:"長さはそのまま、面積は2乗、体積は3乗。",hint:"面積はタテ×ヨコ。比を2回かけるよ。"},
+{id:"M10",s:"math",u:"三平方の定理",t:"in",a:"10",q:["直角をはさむ2辺が6cmと8cmの直角三角形。斜辺は何cm？（数字で）","直角三角形の2辺が6cm、8cm（直角をはさむ）。斜辺の長さは？","6cmと8cmが直角をはさむ直角三角形の、いちばん長い辺は何cm？"],why:"6²＋8²＝36＋64＝100。√100＝10。",tip:"3：4：5の形。6：8：10はその2倍！",hint:"a²＋b²＝c² を使おう。"},
+// ===== 英語 =====
+{id:"E01",s:"eng",u:"現在完了",tg:"入試よく出る",c:["lived","live","living","lives"],q:["I have ( ) in Yokohama since 2020.","( )に入るのは？ I have ( ) in Yokohama since 2020.","「2020年から横浜に住んでいる」：I have ( ) in Yokohama since 2020."],why:"have＋過去分詞で「ずっと〜している（継続）」。liveの過去分詞はlived。",tip:"since・for があったら現在完了の継続を思い出そう。",hint:"haveのあとの動詞の形に注目！"},
+{id:"E02",s:"eng",u:"関係代名詞",c:["who","which","whose","what"],q:["The boy ( ) is running over there is Ken.","( )に入る語は？ The boy ( ) is running over there is Ken.","「むこうで走っている少年はケンです」The boy ( ) is running over there is Ken."],why:"前の名詞（the boy）が人で、あとに動詞が続くので who。",tip:"人→who、もの→which、どちらでもOK→that。",hint:"boyは人？もの？"},
+{id:"E03",s:"eng",u:"受け身",c:["built","build","building","builds"],q:["This temple was ( ) about 600 years ago.","( )に入る形は？ This temple was ( ) about 600 years ago.","「このお寺は約600年前に建てられた」This temple was ( ) about 600 years ago."],why:"be動詞＋過去分詞で「〜される」。buildの過去分詞はbuilt。",tip:"「〜された」は be＋過去分詞。",hint:"お寺は「建てる」側？「建てられる」側？"},
+{id:"E04",s:"eng",u:"不定詞",c:["to drink","drink","drinking","drank"],q:["I want something ( ).","( )に入るのは？ I want something ( ).","「何か飲むものがほしい」I want something ( )."],why:"to＋動詞の原形が前の名詞を説明する（形容詞的用法）。",tip:"something to 〜＝何か〜するもの。",hint:"「飲むための何か」と考えよう。"},
+{id:"E05",s:"eng",u:"比較",c:["tallest","taller","tall","most tall"],q:["Tom is the ( ) of the three.","( )に入る語は？ Tom is the ( ) of the three.","「トムは3人の中でいちばん背が高い」Tom is the ( ) of the three."],why:"the＋最上級＋of〜で「〜の中でいちばん」。tallの最上級はtallest。",tip:"of the three ／ in my class があれば最上級。",hint:"the があるね。いちばん？"},
+{id:"E06",s:"eng",u:"間接疑問",tg:"入試よく出る",c:["Do you know where he lives?","Do you know where does he live?","Do you know where lives he?","Do you know he lives where?"],q:["正しい英文はどれ？「彼がどこに住んでいるか知ってる？」","「彼がどこに住んでいるか知っていますか」を正しく表す文は？","語順が正しいものを選ぼう。"],why:"文の中に入った疑問文は「疑問詞＋主語＋動詞」の順。",tip:"文の中に入ると、ふつうの文の順番に戻る！",hint:"where のあと、主語と動詞はどっちが先？"},
+{id:"E07",s:"eng",u:"分詞",c:["sitting","sits","sat","to sit"],q:["Look at the girl ( ) under the tree.","( )に入る語は？ Look at the girl ( ) under the tree.","「木の下にすわっている女の子を見て」Look at the girl ( ) under the tree."],why:"〜ing形が前の名詞を説明して「〜している…」になる。",tip:"〜ingは「している」、過去分詞は「された」。",hint:"女の子は「すわっている」最中だよ。"},
+{id:"E08",s:"eng",u:"仮定法",c:["were","am","is","be"],q:["If I ( ) a bird, I could fly.","( )に入る語は？ If I ( ) a bird, I could fly.","「もし私が鳥なら飛べるのに」If I ( ) a bird, I could fly."],why:"現実とちがう想像は仮定法。be動詞は主語がIでもwereを使うのが基本。",tip:"If I were 〜, I could 〜.の形で覚えよう。",hint:"could があるね。現実ではない話だよ。"},
+{id:"E09",s:"eng",u:"単語",c:["図書館","研究所","実験室","書店"],q:["library の意味は？","英単語 library を日本語にすると？","We borrow books at the library. libraryの意味は？"],why:"library＝本を借りたり読んだりする図書館。",tip:"本屋は bookstore、実験室は laboratory。",hint:"borrow books（本を借りる）場所だよ。"},
+{id:"E10",s:"eng",u:"It is 〜 for 人 to …",c:["It is easy for me to read English.","It is easy to me for read English.","It is for me easy to read English.","It is easy me for to read English."],q:["語順が正しい文はどれ？「私にとって英語を読むのはかんたんだ」","「英語を読むことは私にとってかんたんです」を表す英文は？","It is 〜 for 人 to …の形で正しいものは？"],why:"It is ＋形容詞＋for 人＋to＋動詞の原形 の順。",tip:"It is〔どんな〕for〔だれ〕to〔何をする〕。",hint:"for me は「私にとって」。toのあとは動詞の原形。"},
+// ===== 理科 =====
+{id:"S01",s:"sci",u:"植物のつくり",c:["葉緑体","核","細胞膜","液胞"],q:["光合成が行われる、細胞の中の緑色の粒は？","植物の細胞で光合成をする部分は？","葉の細胞にある、光を受けてデンプンをつくる緑色の粒の名前は？"],why:"光合成は葉緑体で行われる。",tip:"「葉」で「緑」の粒＝葉緑体。",hint:"名前に「緑」が入っているよ。"},
+{id:"S02",s:"sci",u:"中和",tg:"入試よく出る",c:["塩化ナトリウムと水","水素と酸素","塩素と水","水酸化ナトリウムと水素"],q:["塩酸と水酸化ナトリウム水溶液を混ぜると、何ができる？","中和：HCl＋NaOH → ？","塩酸に水酸化ナトリウム水溶液を加えたときにできる物質は？"],why:"酸とアルカリが中和すると、塩（えん）と水ができる。ここでは塩化ナトリウム。",tip:"中和＝塩（えん）＋水。H⁺とOH⁻で水になる。",hint:"中和すると必ずできる液体があるよ。"},
+{id:"S03",s:"sci",u:"電流",t:"in",a:"3",q:["抵抗2Ωに6Vの電圧をかけると、電流は何A？（数字で）","6V、2Ωのとき、流れる電流は何A？","電圧6V、抵抗2Ω。オームの法則で電流を求めよう（A）。"],why:"電流＝電圧÷抵抗。6÷2＝3A。",tip:"V＝R×I。「ブ・リ・ア」と覚えてもOK。",hint:"オームの法則 V＝R×I を変形しよう。"},
+{id:"S04",s:"sci",u:"イオン",c:["電子を1個失う","電子を1個受けとる","陽子を1個失う","中性子を1個受けとる"],q:["ナトリウム原子がNa⁺になるとき、何が起きる？","Na → Na⁺ のとき、電子はどうなる？","ナトリウムイオンができるしくみとして正しいのは？"],why:"電子はマイナス。マイナスを1個失うと＋1の陽イオンになる。",tip:"電子をなくす→＋（陽イオン）。電子をもらう→−（陰イオン）。",hint:"電子はプラス？マイナス？"},
+{id:"S05",s:"sci",u:"地震",c:["P波","S波","表面波","津波"],q:["初期微動を伝える波は？","地震で、はじめの小さなゆれを伝える波は？","速く伝わり、初期微動を起こす波を選ぼう。"],why:"P波は速く、初期微動を伝える。あとから来るS波が主要動。",tip:"P＝Primary（最初）、S＝Secondary（2番目）。",hint:"アルファベットで「最初」を意味する方だよ。"},
+{id:"S06",s:"sci",u:"遺伝",tg:"入試よく出る",c:["3：1","1：1","1：2：1","2：1"],q:["Aa どうしをかけ合わせた子で、顕性の形質：潜性の形質の比は？","Aa×Aa。子に現れる形質の比（顕性：潜性）は？","遺伝子の組み合わせがAaの親どうしからできる子の、形質の比（顕性：潜性）は？"],why:"AA：Aa：aa＝1：2：1。Aを持てば顕性なので、3：1。",tip:"表（かけ合わせの表）をかくと一発！",hint:"Aa×Aaの表を2×2でかいてみよう。",chk:true},
+{id:"S07",s:"sci",u:"天気",c:["気温が下がり、北寄りの風になる","気温が上がり、南寄りの風になる","気温は変わらず、無風になる","気温が上がり、北寄りの風になる"],q:["寒冷前線が通過したあと、天気はどう変わる？","寒冷前線の通過後の気温と風向きは？","寒冷前線が通りすぎた直後のようすとして正しいものは？"],why:"寒冷前線のうしろは冷たい空気。気温が下がり、風は北寄りに変わる。",tip:"「寒冷」＝さむい空気がやってくる。",hint:"「寒冷」前線のうしろにある空気は？"},
+{id:"S08",s:"sci",u:"密度",c:["2.7 g/cm³","0.37 g/cm³","1080 g/cm³","74 g/cm³"],q:["質量54g、体積20cm³の物質の密度は？","体積20cm³で54gの金属。密度を求めよう。","密度＝質量÷体積。54g、20cm³ なら？"],why:"54÷20＝2.7 g/cm³。",tip:"密度は「1cm³あたり何g」。",hint:"質量を体積でわろう。"},
+{id:"S09",s:"sci",u:"月の満ち欠け",c:["太陽・地球・月の順に一直線","太陽・月・地球の順に一直線","月が太陽と地球の間で直角","地球・太陽・月の順に一直線"],q:["満月になるとき、太陽・地球・月の並びは？","満月のときの位置関係として正しいものは？","月が満月に見えるのは、どんな並びのとき？"],why:"地球から見て、太陽と反対側に月があると、光の当たった面が全部見える。",tip:"満月は太陽の反対側。新月は太陽と同じ側。",hint:"月の光っている面が全部見えるのはどこ？"},
+{id:"S10",s:"sci",u:"仕事",t:"in",a:"20",q:["10Nの物体を2m持ち上げた。仕事は何J？（数字で）","重さ10Nを2mの高さまで持ち上げる仕事は何J？","力10N、動かした距離2m。仕事（J）を求めよう。"],why:"仕事＝力×力の向きに動いた距離。10×2＝20J。",tip:"仕事[J]＝力[N]×距離[m]。",hint:"力と距離をかけ算しよう。"},
+// ===== 社会 =====
+{id:"H01",s:"soc",u:"日本の地理",c:["東経135度","東経140度","北緯135度","東経120度"],q:["日本の標準時子午線は？","兵庫県明石市を通る、日本の時刻の基準の経線は？","日本標準時の基準になる経線を選ぼう。"],why:"日本の標準時は東経135度の経線（明石市を通る）で決まる。",tip:"明石（あかし）の135（いち・さん・ご）。",hint:"兵庫県明石市を通る経線だよ。"},
+{id:"H02",s:"soc",u:"世界の地理",tg:"入試よく出る",c:["9時間","12時間","6時間","15時間"],q:["東経135度の日本と、経度0度のロンドン。時差は何時間？","日本（東経135度）とロンドン（0度）の時差は？","経度差135度の時差を求めよう。"],why:"経度15度で1時間の時差。135÷15＝9時間。",tip:"360度÷24時間＝15度で1時間。",hint:"何度ごとに1時間ずれるかな？",chk:false},
+{id:"H03",s:"soc",u:"古代",c:["中大兄皇子と中臣鎌足","聖徳太子と蘇我馬子","聖武天皇と行基","桓武天皇と坂上田村麻呂"],q:["大化の改新を始めた中心人物は？","645年、蘇我氏をたおして改革を始めたのはだれ？","大化の改新の中心となった2人を選ぼう。"],why:"中大兄皇子と中臣鎌足が蘇我氏をたおし、天皇中心の国づくりを始めた。",tip:"「なか」と「なか」のコンビ！",hint:"2人とも名前に「中」が入っているよ。"},
+{id:"H04",s:"soc",u:"中世",c:["御恩と奉公","班田収授","参勤交代","楽市・楽座"],q:["鎌倉幕府の将軍と御家人の主従関係を何という？","将軍が土地を守り、御家人が戦う。この関係は？","鎌倉時代の、将軍と御家人の結びつきを表す言葉は？"],why:"将軍が土地を保障（御恩）、御家人は命がけで戦う（奉公）。",tip:"もらう＝御恩、お返し＝奉公。",hint:"「ご〇〇と〇〇こう」だよ。"},
+{id:"H05",s:"soc",u:"近世",tg:"入試よく出る",c:["徳川家光","徳川家康","徳川綱吉","徳川吉宗"],q:["参勤交代を制度として定めた将軍は？","大名に江戸と領地を行き来させる制度を定めた将軍は？","武家諸法度で参勤交代を義務にした将軍はだれ？"],why:"3代将軍徳川家光が武家諸法度に参勤交代を加えた。",tip:"家光は「3代目」。参勤の「さん」とセットで覚えよう。",hint:"3代将軍だよ。"},
+{id:"H06",s:"soc",u:"近代",tg:"入試よく出る",c:["地価の3％を現金で納める","収穫量の3％を米で納める","地価の10％を米で納める","収穫量の半分を現金で納める"],q:["明治時代の地租改正の内容は？","地租改正で、税の納め方はどう変わった？","1873年の地租改正。正しい内容を選ぼう。"],why:"地租改正で、土地の値段（地価）の3％を現金で納めるようになり、国の収入が安定した。",tip:"米じゃなくてお金。基準は収穫量じゃなくて地価。",hint:"税の基準は「土地の値段」。"},
+{id:"H07",s:"soc",u:"政治",c:["国会","内閣","裁判所","都道府県"],q:["三権分立で、立法権を持つのは？","法律をつくる権限（立法権）を持つ機関は？","日本で唯一の立法機関はどこ？"],why:"国会が立法、内閣が行政、裁判所が司法を担当する。",tip:"立法＝国会、行政＝内閣、司法＝裁判所。",hint:"法律を話し合って決める場所だよ。"},
+{id:"H08",s:"soc",u:"日本国憲法",c:["国民主権・基本的人権の尊重・平和主義","天皇主権・基本的人権の尊重・平和主義","国民主権・三権分立・平和主義","国民主権・基本的人権の尊重・地方自治"],q:["日本国憲法の三つの基本原理は？","憲法の三大原則として正しい組み合わせは？","日本国憲法の柱になる3つの考え方を選ぼう。"],why:"国民主権・基本的人権の尊重・平和主義が三つの基本原理。",tip:"「主権・人権・平和」の3つの「け／わ」。",hint:"主権を持つのは天皇？国民？"},
+{id:"H09",s:"soc",u:"国会",c:["予算は先に衆議院で審議する","予算は先に参議院で審議する","法律は参議院だけで決められる","内閣総理大臣は参議院だけで指名する"],q:["衆議院の優越の例として正しいのは？","衆議院と参議院。衆議院が優先されるルールはどれ？","「衆議院の優越」にあてはまるものを選ぼう。"],why:"予算は衆議院が先に審議する（予算の先議権）。任期が短く解散があり、国民の声を反映しやすいから。",tip:"衆議院は任期4年＋解散あり→国民の意見に近い。",hint:"任期が短く解散があるのはどっち？"},
+{id:"H10",s:"soc",u:"経済",c:["価格が上がる","価格が下がる","価格は変わらない","供給量が減る"],q:["需要量が供給量より多いとき、価格はふつうどうなる？","買いたい人が多く、品物が少ないとき、価格は？","需要＞供給 のときの価格の動きは？"],why:"ほしい人が多くて品物が足りないと、高くても売れるので価格が上がる。",tip:"人気でレア→高くなる！",hint:"人気の限定グッズを思いうかべよう。"}
+];
+
+// ===== 教科の中のカテゴリ =====
+const CATS={
+  koku:[["漢字",["K01","K02","K03"]],["文法・敬語",["K04","K05"]],["語句",["K06","K07","K10"]],["古文",["K08","K09"]]],
+  math:[["数と式",["M01","M02"]],["因数分解・方程式",["M03","M04"]],["関数",["M05","M06"]],["図形",["M08","M09","M10"]],["確率",["M07"]]],
+  eng:[["時制・受け身",["E01","E03","E08"]],["文のかたち",["E02","E06","E07","E10"]],["不定詞・比較",["E04","E05"]],["単語",["E09"]]],
+  sci:[["生物",["S01","S06"]],["化学",["S02","S04","S08"]],["物理",["S03","S10"]],["地学",["S05","S07","S09"]]],
+  soc:[["地理（日本）",["H01"]],["地理（世界）",["H02"]],["歴史",["H03","H04","H05","H06"]],["公民",["H07","H08","H09","H10"]]]
+};
+// ===== 計算問題：式を書いてから答えを見る（式の例） =====
+const STEPS={
+  M01:"(−3)² − 2×(−4)\n＝ 9 − (−8)\n＝ 9 ＋ 8\n＝ 17",
+  M02:"√12 ＋ √27\n＝ 2√3 ＋ 3√3\n＝ 5√3",
+  M03:"かけて＋6、たして−5 になる2数 → −2 と −3\nx² − 5x ＋ 6 ＝ (x−2)(x−3)",
+  M04:"x² ＋ 4x − 12 ＝ 0\n(x＋6)(x−2) ＝ 0\nx ＝ −6, 2",
+  M05:"y＝ax² に x＝2, y＝8 を入れる\n8 ＝ a × 2²\n8 ＝ 4a\na ＝ 2",
+  M06:"x＝1 → y＝1、x＝3 → y＝9\n(9 − 1) ÷ (3 − 1)\n＝ 8 ÷ 2 ＝ 4",
+  M07:"全部で 6 × 6 ＝ 36通り\n和が7：(1,6)(2,5)(3,4)(4,3)(5,2)(6,1) の6通り\n6/36 ＝ 1/6",
+  M08:"円周角 ＝ 中心角 ÷ 2\n100 ÷ 2 ＝ 50°",
+  M09:"面積比 ＝ 相似比の2乗\n2² ： 3² ＝ 4 ： 9",
+  M10:"6² ＋ 8² ＝ 36 ＋ 64 ＝ 100\n斜辺 ＝ √100 ＝ 10cm",
+  S03:"電流 ＝ 電圧 ÷ 抵抗\n6 ÷ 2 ＝ 3A",
+  S08:"密度 ＝ 質量 ÷ 体積\n54 ÷ 20 ＝ 2.7 g/cm³",
+  S10:"仕事 ＝ 力 × 距離\n10 × 2 ＝ 20J",
+  H02:"15度で1時間ずれる\n135 ÷ 15 ＝ 9時間"
+};
+const ansText=q=>q.t==="in"?q.a+({M10:" cm",S03:" A",S10:" J"}[q.id]||""):q.c[0];
+const catOf=id=>{for(const s in CATS)for(const [n,ids] of CATS[s])if(ids.includes(id))return n;return ""};
+const catIds=(s,c)=>c?(CATS[s].find(x=>x[0]===c)||[0,[]])[1]:Q.filter(q=>q.s===s).map(q=>q.id);
+
+// ===== 絵で覚えよう（オリジナルSVG） pre:1 は問題といっしょに出す（答えがわからない絵だけ） =====
+const L='stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"';
+const F=c=>`fill="var(--${c})"`;
+const T=(x,y,t,s=13,a="middle")=>`<text x="${x}" y="${y}" text-anchor="${a}" fill="var(--ink)" style="font:800 ${s}px 'M PLUS Rounded 1c',sans-serif">${t}</text>`;
+const KAN='<rect x="-6" y="-22" width="12" height="11" rx="2" fill="var(--ink)"/>';
+const KABUTO=`<path d="M-15 -3q15 -24 30 0z" ${F("fSoc")} ${L}/><path d="M0 -14l-6 -10M0 -14l6 -10" ${L}/>`;
+const H=(x,y,c="lavL",s=1,hat="")=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-12" y="11" width="24" height="24" rx="10" ${F(c)} ${L}/><circle r="12" ${F("card")} ${L}/>${hat}<circle cx="-4" cy="1" r="1.8" fill="var(--ink)"/><circle cx="4" cy="1" r="1.8" fill="var(--ink)"/><ellipse cx="-7" cy="5" rx="2.6" ry="1.6" fill="var(--pink)" opacity=".5"/><ellipse cx="7" cy="5" rx="2.6" ry="1.6" fill="var(--pink)" opacity=".5"/></g>`;
+const BIRD=(x,y)=>`<g transform="translate(${x} ${y})"><ellipse rx="13" ry="8" ${F("fEng")} ${L}/><path d="M11 -3l9 3-9 3" ${F("fSoc")} ${L}/><circle cx="6" cy="-2" r="1.6" fill="var(--ink)"/><path d="M-4 -5q-6 -14 -16 -6" fill="none" ${L}/></g>`;
+const PL=(f,x0,x1,ox,oy,sx,sy)=>{const p=[];for(let i=0;i<=40;i++){const x=x0+(x1-x0)*i/40;p.push((ox+x*sx).toFixed(1)+","+(oy-f(x)*sy).toFixed(1))}return `<polyline points="${p.join(" ")}" fill="none" stroke="var(--pink)" stroke-width="3"/>`};
+const AX=(ox,oy)=>`<path d="M14 ${oy}H190M${ox} 114V6" fill="none" stroke="var(--sub)" stroke-width="2"/>`;
+const DOT=(x,y,c="lav")=>`<circle cx="${x}" cy="${y}" r="5" ${F(c)} ${L}/>`;
+const DIE=(x,y,pips)=>`<g transform="translate(${x} ${y})"><rect x="-26" y="-26" width="52" height="52" rx="12" ${F("card")} ${L}/>${pips.map(([a,b])=>`<circle cx="${a}" cy="${b}" r="5" fill="${a===0&&b===0&&pips.length===1?"var(--ng)":"var(--ink)"}"/>`).join("")}</g>`;
+const PIC={
+K01:{pre:1,cap:"手紙や荷物を届けるしくみ＝郵便",d:`<rect x="28" y="38" width="76" height="50" rx="6" ${F("card")} ${L}/><path d="M28 42l38 26 38-26" fill="none" ${L}/><rect x="124" y="22" width="44" height="72" rx="20" ${F("pinkL")} ${L}/><rect x="134" y="42" width="24" height="6" rx="3" fill="var(--ink)"/><rect x="139" y="94" width="14" height="18" ${F("pinkL")} ${L}/>`},
+K02:{pre:1,cap:"ひとつで、まじりけなし＝単純",d:`<rect x="70" y="30" width="60" height="60" rx="14" ${F("lavL")} ${L}/>${T(100,70,"1",30)}${T(100,112,"シンプル",13)}`},
+K03:{pre:1,cap:"ぐんぐん目立って変わる＝著しい",d:`${[0,1,2,3].map(i=>`<rect x="${40+i*32}" y="${96-(i+1)*18}" width="22" height="${(i+1)*18}" rx="5" ${F(i===3?"pinkL":"lavL")} ${L}/>`).join("")}<path d="M36 70L160 18M148 16l12 2-4 12" fill="none" ${L}/>`},
+K04:{pre:1,cap:"主語が先生なら尊敬語",d:`<rect x="20" y="14" width="80" height="50" rx="6" ${F("okL")} ${L}/>${T(60,44,"きょうの授業",11)}${H(130,48,"lavL",1.4)}${H(60,82,"pinkL",1)}`},
+K05:{pre:1,cap:"「静かだ」と言い切れる＝形容動詞",d:`<rect x="50" y="14" width="100" height="80" rx="10" ${F("lavL")} ${L}/><path d="M100 14v80M50 54h100" ${L}/><path d="M128 26a12 12 0 1 0 8 20a10 10 0 1 1 -8 -20z" ${F("fSoc")} ${L}/>${T(100,112,"シーン…",13)}`},
+K06:{pre:1,cap:"山に登る＝登山（下の字が目的）",d:`<path d="M20 108L90 22L160 108z" ${F("okL")} ${L}/><path d="M90 22v-14l16 6-16 6" ${F("pinkL")} ${L}/>${H(120,62,"pinkL",.8)}`},
+K07:{cap:"石を1個投げて鳥が2羽",d:`<ellipse cx="50" cy="90" rx="22" ry="14" ${F("gray")} ${L}/>${BIRD(120,40)}${BIRD(160,74)}<path d="M72 80q20 -30 34 -36" fill="none" stroke="var(--sub)" stroke-width="2" stroke-dasharray="5 5"/>`},
+K08:{pre:1,cap:"古文の「をかし」＝趣がある・すてき",d:`<circle cx="100" cy="58" r="48" ${F("lavL")} ${L}/><circle cx="118" cy="40" r="14" ${F("fSoc")} ${L}/>${[[60,64],[80,84],[100,72]].map(([x,y])=>`<path d="M${x} ${y}q6 -10 12 0q-6 6 -12 0z" ${F("pinkL")} ${L}/>`).join("")}`},
+K09:{cap:"語の頭以外の「ふ」は「う」",d:`<rect x="24" y="26" width="152" height="66" rx="10" ${F("memo")} ${L}/>${T(66,70,"いふ",26)}${T(100,68,"→",20)}${T(138,70,"いう",26)}`},
+K10:{pre:1,cap:"猫の手も借りたい＝とてもいそがしい",d:`<circle cx="70" cy="70" r="28" ${F("card")} ${L}/>${[[50,36],[70,30],[90,36]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="9" ${F("card")} ${L}/>`).join("")}<ellipse cx="70" cy="74" rx="11" ry="9" ${F("pinkL")}/><circle cx="148" cy="62" r="30" ${F("card")} ${L}/><path d="M148 62V42M148 62l14 8" ${L}/>${T(148,112,"いそがしい！",12)}`},
+M01:{pre:1,cap:"マイナスの2乗はプラスになる",d:`<path d="M14 64H186" ${L}/>${[-4,-3,-2,-1,0,1,2,3,4].map(n=>`<path d="M${100+n*20} 58v12" ${L}/>${T(100+n*20,90,n<0?"−"+(-n):n,12)}`).join("")}${DOT(40,64,"pink")}`},
+M02:{cap:"√12＝2√3、√27＝3√3",d:`<rect x="20" y="26" width="72" height="56" rx="10" ${F("lavL")} ${L}/>${T(56,60,"√(4×3)",14)}<rect x="108" y="26" width="72" height="56" rx="10" ${F("pinkL")} ${L}/>${T(144,60,"√(9×3)",14)}${T(100,108,"2√3 ＋ 3√3 ＝ 5√3",14)}`},
+M03:{cap:"かけて＋6、たして−5 → −2と−3",d:`<rect x="50" y="14" width="100" height="92" ${F("card")} ${L}/><path d="M110 14v92M50 70h100" ${L}/>${T(80,48,"x²",16)}${T(130,48,"−3x",14)}${T(80,94,"−2x",14)}${T(130,94,"＋6",14)}${T(36,48,"x",14)}${T(36,94,"−2",14)}${T(80,10,"x",12)}${T(130,10,"−3",12)}`},
+M04:{cap:"グラフがx軸と交わるところが解",d:`${AX(130,60)}${PL(x=>x*x+4*x-12,-7,3,130,60,12,3)}${DOT(58,60,"lav")}${DOT(154,60,"lav")}${T(58,48,"−6",13)}${T(160,48,"2",13)}`},
+M05:{pre:1,cap:"通る点を式に代入する",d:`${AX(100,110)}${PL(x=>2*x*x,-2.2,2.2,100,110,20,10)}${DOT(140,30,"lav")}${T(158,26,"(2, 8)",12)}`},
+M06:{pre:1,cap:"変化の割合＝yの増え方÷xの増え方",d:`${AX(60,110)}${PL(x=>x*x,0,3.2,60,110,28,10)}<path d="M88 100L144 20" stroke="var(--lav)" stroke-width="2.5" stroke-dasharray="6 5"/>${DOT(88,100,"lav")}${DOT(144,20,"lav")}${T(98,96,"x＝1",11,"start")}${T(152,24,"x＝3",11,"start")}`},
+M07:{pre:1,cap:"さいころ2個は36通り",d:`${DIE(70,60,[[0,0]])}${DIE(132,60,[[-12,-14],[-12,0],[-12,14],[12,-14],[12,0],[12,14]])}${T(101,64,"＋",18)}`},
+M08:{pre:1,cap:"円周角は中心角の半分",d:`<circle cx="100" cy="62" r="44" fill="none" ${L}/><path d="M71.7 95.7L100 62L128.3 95.7M71.7 95.7L100 18L128.3 95.7" fill="none" ${L}/><circle cx="100" cy="62" r="3" fill="var(--ink)"/>${T(100,84,"100°",11)}${T(100,40,"?",14)}`},
+M09:{pre:1,cap:"面積の比は相似比の2乗",d:`<path d="M24 104H64V74z" ${F("lavL")} ${L}/><path d="M96 104H156V59z" ${F("pinkL")} ${L}/>${T(44,118,"2",13)}${T(126,118,"3",13)}`},
+M10:{pre:1,cap:"6：8：10 は 3：4：5 の2倍",d:`<path d="M40 104H160L40 14z" ${F("lavL")} ${L}/><path d="M40 92h12v12" fill="none" ${L}/>${T(100,120,"8cm",12)}${T(26,64,"6cm",12)}${T(112,54,"?",16)}`},
+E01:{pre:1,cap:"since＝〜から（ずっと）",d:`<path d="M30 60L70 26L110 60V104H30z" ${F("pinkL")} ${L}/><rect x="60" y="76" width="20" height="28" ${F("card")} ${L}/><rect x="126" y="30" width="56" height="60" rx="8" ${F("card")} ${L}/><rect x="126" y="30" width="56" height="16" rx="6" ${F("lavL")} ${L}/>${T(154,72,"2020〜",12)}`},
+E02:{pre:1,cap:"人のあとは who",d:`${H(100,50,"fEng",1.6)}<path d="M40 50h28M34 66h30M44 82h22" stroke="var(--sub)" stroke-width="3" stroke-linecap="round"/>`},
+E03:{pre:1,cap:"was＋過去分詞＝〜された",d:`${[0,1,2].map(i=>`<path d="M${58+i*10} ${86-i*26}h${84-i*20}l-10 -12h${-64+i*20}z" ${F("pinkL")} ${L}/><rect x="${78+i*8}" y="${86-i*26}" width="${44-i*16}" height="14" ${F("card")} ${L}/>`).join("")}<path d="M100 22V8" ${L}/>`},
+E04:{pre:1,cap:"something to drink＝飲むもの",d:`<path d="M74 34h52l-8 72h-36z" ${F("fEng")} ${L}/><path d="M74 54h52" ${L}/><path d="M108 34l14 -24" ${L}/>`},
+E05:{pre:1,cap:"the＋最上級＋of the three",d:`${H(52,78,"lavL",.9)}${H(100,48,"pinkL",1.4)}${H(148,70,"okL",1)}${T(100,12,"Tom",12)}`},
+E06:{pre:1,cap:"文の中では 疑問詞＋主語＋動詞",d:`<path d="M60 92L84 66L108 92V108H60z" ${F("pinkL")} ${L}/><path d="M140 64c-12 -14 -16 -22 -16 -30a16 16 0 0 1 32 0c0 8 -4 16 -16 30z" ${F("lavL")} ${L}/>${T(140,40,"?",14)}`},
+E07:{pre:1,cap:"〜ing が名詞を説明＝〜している",d:`<rect x="122" y="56" width="16" height="52" ${F("pinkL")} ${L}/><circle cx="130" cy="40" r="34" ${F("okL")} ${L}/>${H(76,76,"pinkL",1.1)}`},
+E08:{pre:1,cap:"If I were 〜（現実じゃない想像）",d:`${BIRD(100,56)}<path d="M30 92q20 -10 40 0q20 10 40 0q20 -10 40 0" fill="none" stroke="var(--sub)" stroke-width="2"/>`},
+E09:{cap:"library＝図書館（本屋は bookstore）",d:`<rect x="40" y="16" width="120" height="92" rx="6" ${F("card")} ${L}/><path d="M40 46h120M40 76h120" ${L}/>${[0,1,2].map(r=>[0,1,2,3,4,5].map(i=>`<rect x="${48+i*18}" y="${22+r*30}" width="12" height="22" rx="2" ${F(["lavL","pinkL","okL"][(i+r)%3])} stroke="var(--ink)" stroke-width="1.5"/>`).join("")).join("")}`},
+E10:{pre:1,cap:"It is〔どんな〕for〔だれ〕to〔何する〕",d:`<path d="M100 30q-30 -12 -66 0v74q36 -12 66 0z" ${F("card")} ${L}/><path d="M100 30q30 -12 66 0v74q-36 -12 -66 0z" ${F("card")} ${L}/>${T(66,70,"ABC",14)}${T(134,70,"easy!",14)}`},
+S01:{cap:"緑の粒＝葉緑体で光合成",d:`<rect x="40" y="16" width="120" height="90" rx="20" ${F("card")} ${L}/>${[[62,36],[90,30],[138,40],[60,86],[140,84],[110,92],[70,60]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="9" ry="6" ${F("fSci")} stroke="var(--ink)" stroke-width="1.5"/>`).join("")}<circle cx="110" cy="62" r="14" ${F("lavL")} ${L}/>`},
+S02:{pre:1,cap:"中和すると 塩（えん）＋水",d:`<path d="M30 30v66a8 8 0 0 0 8 8h36a8 8 0 0 0 8 -8V30" ${F("pinkL")} ${L}/>${T(56,72,"塩酸",12)}<path d="M118 30v66a8 8 0 0 0 8 8h36a8 8 0 0 0 8 -8V30" ${F("lavL")} ${L}/>${T(144,66,"水酸化",11)}${T(144,82,"Na",11)}${T(100,72,"＋",18)}`},
+S03:{pre:1,cap:"電流＝電圧÷抵抗",d:`<path d="M30 24H170V96H30z" fill="none" ${L}/><path d="M22 54h16M26 66h8" stroke="var(--ink)" stroke-width="3"/><rect x="80" y="14" width="40" height="20" rx="4" ${F("pinkL")} ${L}/>${T(100,29,"2Ω",11)}<circle cx="100" cy="96" r="12" ${F("lavL")} ${L}/>${T(100,101,"A",13)}${T(52,64,"6V",12,"start")}`},
+S04:{cap:"電子（−）を失うと＋のイオン",d:`<circle cx="90" cy="62" r="12" ${F("pinkL")} ${L}/>${T(90,67,"Na",11)}<circle cx="90" cy="62" r="30" fill="none" stroke="var(--sub)" stroke-width="2"/><circle cx="90" cy="62" r="46" fill="none" stroke="var(--sub)" stroke-width="2"/><circle cx="160" cy="34" r="9" ${F("lavL")} ${L}/>${T(160,38,"e⁻",10)}<path d="M132 52l18 -12" fill="none" ${L}/>`},
+S05:{pre:1,cap:"はじめの小さなゆれ＝初期微動",d:`<path d="M14 60h30${Array.from({length:8},(_,i)=>`l4 ${i%2?8:-8}`).join("")}l4 0${Array.from({length:10},(_,i)=>`l5 ${i%2?40:-40}`).join("")}l5 0H186" fill="none" stroke="var(--pink)" stroke-width="2.5"/>${T(60,104,"小さなゆれ",11)}${T(126,114,"大きなゆれ",11)}`},
+S06:{cap:"AA：Aa：aa＝1：2：1 → 3：1",d:`<rect x="60" y="14" width="100" height="92" ${F("card")} ${L}/><path d="M110 14v92M60 60h100" ${L}/>${T(85,44,"AA",14)}${T(135,44,"Aa",14)}${T(85,90,"Aa",14)}${T(135,90,"aa",14)}${T(46,44,"A",13)}${T(46,90,"a",13)}${T(85,10,"A",11)}${T(135,10,"a",11)}`},
+S07:{pre:1,cap:"寒冷前線のうしろは冷たい空気",d:`<path d="M20 100Q90 70 180 20" fill="none" stroke="var(--fEng)" stroke-width="4"/>${[[50,87],[86,74],[122,58],[156,36]].map(([x,y])=>`<path d="M${x} ${y}l10 -14l8 9z" fill="var(--fEng)"/>`).join("")}${T(46,40,"つめたい空気",11)}<path d="M40 50l16 18" fill="none" ${L}/>`},
+S08:{pre:1,cap:"密度＝1cm³あたりの質量",d:`<rect x="70" y="30" width="54" height="46" rx="6" ${F("lavL")} ${L}/>${T(97,58,"20cm³",12)}<rect x="40" y="78" width="120" height="14" rx="4" ${F("card")} ${L}/><rect x="56" y="92" width="88" height="20" rx="6" ${F("pinkL")} ${L}/>${T(100,107,"54g",12)}`},
+S09:{cap:"太陽・地球・月の順＝満月",d:`<circle cx="36" cy="60" r="24" ${F("fSoc")} ${L}/><circle cx="110" cy="60" r="14" ${F("fEng")} ${L}/><circle cx="168" cy="60" r="9" ${F("card")} ${L}/><path d="M62 60h30M126 60h28" stroke="var(--sub)" stroke-dasharray="4 4" stroke-width="2"/>${T(36,104,"太陽",11)}${T(110,96,"地球",11)}${T(168,92,"月",11)}`},
+S10:{pre:1,cap:"仕事＝力×距離",d:`<rect x="70" y="20" width="44" height="34" rx="6" ${F("pinkL")} ${L}/><path d="M92 54V20M92 14l-8 10h16z" fill="none" ${L}/>${T(124,38,"10N",12,"start")}<path d="M150 20v84M144 20h12M144 104h12" fill="none" ${L}/>${T(164,66,"2m",12,"start")}<path d="M30 104h110" ${L}/>`},
+H01:{cap:"東経135度は明石市を通る",d:`<circle cx="100" cy="60" r="48" ${F("okL")} ${L}/><path d="M100 12q30 48 0 96" fill="none" stroke="var(--pink)" stroke-width="3"/><path d="M52 60h96" fill="none" stroke="var(--sub)" stroke-width="2"/>${T(150,24,"東経135°",12)}`},
+H02:{pre:1,cap:"15度で1時間の時差",d:`<circle cx="56" cy="56" r="32" ${F("card")} ${L}/><circle cx="144" cy="56" r="32" ${F("card")} ${L}/><circle cx="56" cy="56" r="3" fill="var(--ink)"/><circle cx="144" cy="56" r="3" fill="var(--ink)"/>${T(56,108,"ロンドン 0°",11)}${T(144,108,"日本 135°",11)}`},
+H03:{cap:"「なか」と「なか」で大化の改新（645年）",d:`${H(64,48,"lavL",1.4,KAN)}${H(136,48,"pinkL",1.4,KAN)}<rect x="80" y="96" width="40" height="18" rx="4" ${F("memo")} ${L}/>${T(100,110,"645",11)}`},
+H04:{cap:"御恩（土地）⇔ 奉公（たたかう）",d:`${H(44,54,"lavL",1.3,KAN)}${H(156,54,"okL",1.3,KABUTO)}<path d="M74 40h52M118 32l8 8-8 8" fill="none" ${L}/><path d="M126 82H74M82 74l-8 8 8 8" fill="none" ${L}/>${T(100,30,"御恩",12)}${T(100,104,"奉公",12)}`},
+H05:{pre:1,cap:"大名が江戸と領地を行き来",d:`<path d="M10 100H190" stroke="var(--sub)" stroke-width="2"/><rect x="74" y="54" width="40" height="30" rx="6" ${F("pinkL")} ${L}/><path d="M50 60h90" ${L}/>${H(40,62,"lavL",.8)}${H(150,62,"lavL",.8)}<path d="M160 14h20v20h-20z" ${F("card")} ${L}/>${T(170,48,"江戸",10)}`},
+H06:{cap:"地価の3％を現金で",d:`<rect x="20" y="40" width="96" height="64" rx="6" ${F("okL")} ${L}/><path d="M20 62h96M20 84h96M52 40v64M84 40v64" stroke="var(--ink)" stroke-width="1.5"/><circle cx="154" cy="62" r="26" ${F("fSoc")} ${L}/>${T(154,68,"3%",16)}`},
+H07:{cap:"立法＝国会、行政＝内閣、司法＝裁判所",d:`<path d="M24 34L100 8L176 34z" ${F("lavL")} ${L}/>${["国会","内閣","裁判所"].map((t,i)=>`<rect x="${34+i*50}" y="38" width="32" height="62" ${F(i===0?"pinkL":"card")} ${L}/>${T(50+i*50,116,t,11)}`).join("")}`},
+H08:{pre:1,cap:"国民主権・基本的人権の尊重・平和主義",d:`<rect x="64" y="14" width="72" height="94" rx="6" ${F("card")} ${L}/><rect x="72" y="22" width="56" height="78" rx="4" ${F("memo")} stroke="var(--ink)" stroke-width="1.5"/>${T(100,56,"日本国",12)}${T(100,74,"憲法",12)}${[0,1,2].map(i=>`<path d="M${82+i*16} 108v12l5 -4 5 4v-12" ${F(["pinkL","lavL","okL"][i])} ${L}/>`).join("")}`},
+H09:{cap:"衆議院は任期4年＋解散あり→優先",d:`<path d="M100 18V104M70 110h60" fill="none" ${L}/><path d="M36 54L164 34" ${L}/><path d="M36 54l-16 30h32z" ${F("pinkL")} ${L}/><path d="M164 34l-16 30h32z" ${F("lavL")} ${L}/>${T(36,78,"衆",13)}${T(164,58,"参",13)}`},
+H10:{cap:"ほしい人が多い→価格が上がる",d:`${[0,1,2,3].map(i=>H(30+i*28,70,"lavL",.75)).join("")}<rect x="146" y="58" width="30" height="36" rx="6" ${F("pinkL")} ${L}/><path d="M160 46V14M152 22l8 -8 8 8" fill="none" stroke="var(--ng)" stroke-width="3" stroke-linecap="round"/>${T(160,112,"¥",13)}`}
+};
+const picSVG=id=>PIC[id]?`<svg viewBox="0 0 200 122" role="img" aria-label="${esc(PIC[id].cap)}">${PIC[id].d}</svg>`:"";
+
+const KEY="yume5_v1";
+let S={nick:"",sound:true,p:{},last:{}};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const P=id=>S.p[id]||(S.p[id]={st:0,g:false,w:false,seen:0});
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---- 音 ----
+let AC=null;
+function tone(f,t0,d,v){const o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0,AC.currentTime+t0);g.gain.linearRampToValueAtTime(v,AC.currentTime+t0+.01);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t0+d);o.connect(g);g.connect(AC.destination);o.start(AC.currentTime+t0);o.stop(AC.currentTime+t0+d+.05)}
+function snd(kind){if(!S.sound)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  if(kind==="ok"){tone(1318,0,.12,.15);tone(1760,.09,.25,.15)}
+  else if(kind==="grad"){[1047,1319,1568,2093,2637].forEach((f,i)=>tone(f,i*.09,.3,.12))}}catch(e){}}
+
+// ---- オリジナルちびキャラ ----
+function mascot(prop,size=64){
+  // 教科ごとに色ちがいのスマイル
+  const col={brush:"--fKoku",ruler:"--fMath",abc:"--fEng",flask:"--fSci",globe:"--fSoc"}[prop]||"--fKoku";
+  return `<svg width="${size}" height="${size}" viewBox="0 0 66 66" aria-hidden="true">
+  <circle cx="33" cy="34" r="27" fill="var(${col})" stroke="var(--faceInk)" stroke-width="2.5"/>
+  <ellipse cx="23" cy="29" rx="3" ry="4" fill="var(--faceInk)"/><ellipse cx="43" cy="29" rx="3" ry="4" fill="var(--faceInk)"/>
+  <ellipse cx="16" cy="40" rx="5" ry="3" fill="#fff" opacity=".45"/><ellipse cx="50" cy="40" rx="5" ry="3" fill="#fff" opacity=".45"/>
+  <path d="M20 41q13 14 26 0" stroke="var(--faceInk)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,1800)}
+function copy(text,el){
+  const done=()=>toast("コピーしたよ！");
+  try{navigator.clipboard.writeText(text).then(done,()=>sel(el))}catch(e){sel(el)}
+  function sel(e){if(!e)return;const r=document.createRange();r.selectNodeContents(e);const s=getSelection();s.removeAllRanges();s.addRange(r);toast("選んだ文字をコピーしてね")}
+}
+function daysLeft(){const t=new Date(2027,1,16);const n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.round((t-n)/864e5))}
+
+function topbar(back){
+  return `<div class="top">${back?`<button class="btn small" id="back">← もどる</button>`:`<h1>5教科ノート</h1>`}
+  <button class="btn small" id="sndBtn" aria-pressed="${S.sound}">音 ${S.sound?"ON":"OFF"}</button></div>`;
+}
+function bindTop(){
+  document.body.classList.remove("typing");
+  document.getElementById("sndBtn").onclick=()=>{S.sound=!S.sound;save();const b=document.getElementById("sndBtn");b.textContent="音 "+(S.sound?"ON":"OFF");b.setAttribute("aria-pressed",S.sound)};
+  const b=document.getElementById("back");if(b)b.onclick=home;
+}
+
+// ---- ホーム ----
+function home(){
+  const cards=Object.entries(SUBJ).map(([k,v])=>{
+    const qs=Q.filter(q=>q.s===k),g=qs.filter(q=>P(q.id).g).length;
+    return `<button class="btn subj" data-s="${k}">${mascot(v.prop,44)}<span class="nm">${v.nm}</span></button>`}).join("");
+  app.innerHTML=`${topbar(false)}
+  <div class="card">
+    <div class="count"><span>共通検査まで あと</span><b>${daysLeft()}</b><span>日</span></div>
+    <div class="sub">2027年2月16日（火）神奈川県公立高校の学力検査。日程は県の発表や先生に確認してね。</div>
+  </div>
+  <div class="card">
+    <label for="nick">ニックネーム（本名は書かないでね）</label>
+    <input type="text" id="nick" maxlength="10" placeholder="例：もちこ" value="${esc(S.nick)}">
+  </div>
+  <h2>どの教科やる？</h2>
+  <div class="subjects">${cards}</div>
+  <div class="card">
+    <h3>教え合いモード</h3>
+    <div class="sub">友達から届いた問題番号（例：M02 H05）を入れると、答えと理由が見られるよ。</div>
+    <button class="btn lav" id="teach">番号を入れて教えてもらう</button>
+  </div>
+  <div class="card">
+    <h3>高校えらびノート</h3>
+    <div class="sub">横浜・神奈川の高校のこと、入試のしくみ、併願校のことを柴犬に聞けるよ。</div>
+    <a class="btn main" href="https://nao-1980.github.io/shiba-navi/" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">高校えらびノートをひらく</a>
+    <a class="btn" href="https://claude.ai/artifact/222Lmtp1fc4ZFEYt51S53D" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">受験の予定表をひらく</a>
+  </div>
+  <div class="memo">1回5問・休み時間で終わる量。どの問題も<b>2回つづけて正解</b>で卒業！ まちがえた問題は少しあとと次の回にまた出るよ。</div>`;
+  bindTop();
+  document.getElementById("nick").oninput=e=>{S.nick=e.target.value.slice(0,10);save()};
+  app.querySelectorAll(".subj").forEach(b=>b.onclick=()=>cats(b.dataset.s));
+  document.getElementById("teach").onclick=()=>teach("");
+}
+
+// ---- カテゴリをえらぶ ----
+function cats(s){
+  const all=Q.filter(q=>q.s===s).length;
+  const list=[["",all]].concat(CATS[s].map(([n,ids])=>[n,ids.length]));
+  app.innerHTML=`${topbar(true)}
+  <div class="card"><div class="qhead">${mascot(SUBJ[s].prop,56)}<h2>${SUBJ[s].nm}　どこをやる？</h2></div></div>
+  <div class="choices">${list.map(([n,c])=>`<button class="btn cat" data-c="${esc(n)}">${n?esc(n):"ぜんぶまぜる"}<span class="sub">　${c}問</span></button>`).join("")}</div>`;
+  bindTop();
+  app.querySelectorAll(".cat").forEach(b=>b.onclick=()=>start(s,b.dataset.c));
+}
+
+// ---- 出題 ----
+let R=null;
+function start(s,cat=""){
+  const ids=catIds(s,cat);
+  const pool=Q.filter(q=>ids.includes(q.id)&&!P(q.id).g);
+  if(!pool.length){allDone(s,cat);return}
+  const ord=shuf(pool).sort((a,b)=>(P(b.id).w-P(a.id).w)||(P(a.id).seen-P(b.id).seen));
+  R={s,cat,queue:ord.slice(0,5).map(q=>q.id),i:0,log:[],first:{},retried:new Set(),hint:false,grads:[]};
+  ask();
+}
+function ask(){
+  const id=R.queue[R.i],q=Q.find(x=>x.id===id),p=P(id);R.hint=false;
+  const film=R.queue.map((_,k)=>`<span class="${k<R.log.length?(R.log[k]?"ok":""):(k===R.i?"now":"")}">${k<R.log.length?(R.log[k]?"♡":"・"):""}</span>`).join("");
+  const body=STEPS[id]
+    ?`<label for="shiki">式を書いてね（答えまで書こう）</label><textarea id="shiki" rows="4" placeholder="例：6 ÷ 2 ＝ …"></textarea><button class="btn main" id="reveal">答えを見る</button><div id="rv"></div>`
+    :q.t==="in"
+    ?`<input type="text" id="ans" autocomplete="off" placeholder="ここに書こう"><button class="btn main" id="go">こたえる</button>`
+    :`<div class="choices">${shuf(q.c).map(c=>`<button class="btn ch">${esc(c)}</button>`).join("")}</div>`;
+  app.innerHTML=`${topbar(true)}
+  <div class="film" aria-label="きょうのログ">${film}</div>
+  <div class="card pop" id="qc">
+    <div class="row" style="gap:6px"><span class="pill">${SUBJ[q.s].nm}・${esc(catOf(q.id))}</span><span class="pill">${esc(q.u)}</span>${q.tg?`<span class="pill pk">${q.tg}</span>`:""}</div>
+    <div class="qhead">${mascot(SUBJ[q.s].prop)}<div class="qtext">${esc(pick(q.q))}</div></div>
+    ${PIC[id]&&PIC[id].pre?`<div class="pic pre">${picSVG(id)}</div>`:""}
+    ${body}
+    <button class="btn small" id="hintBtn">ヒントを見る</button>
+    <div class="memo" id="hint" hidden></div>
+  </div><div id="fb"></div>`;
+  bindTop();
+  document.body.classList.remove("typing");
+  app.querySelectorAll("#ans,#shiki").forEach(el=>{
+    el.addEventListener("focus",()=>{document.body.classList.add("typing");setTimeout(()=>{const t=document.querySelector("#qc");t&&t.scrollIntoView({block:"start",behavior:reduce?"auto":"smooth"})},350)});
+    el.addEventListener("blur",()=>setTimeout(()=>{const ae=document.activeElement;if(!ae||(ae.id!=="ans"&&ae.id!=="shiki"))document.body.classList.remove("typing")},300));
+  });
+  document.getElementById("hintBtn").onclick=()=>{R.hint=true;const h=document.getElementById("hint");h.hidden=false;h.textContent="ヒント："+q.hint};
+  if(STEPS[id]){
+    const ta=document.getElementById("shiki"),rb=document.getElementById("reveal");
+    rb.onclick=()=>{const v=ta.value.trim();if(!v){toast("先に式を書いてね");ta.focus();return}
+      ta.readOnly=true;rb.hidden=true;document.getElementById("hintBtn").hidden=true;
+      const rv=document.getElementById("rv");
+      rv.innerHTML=`<div class="cmp"><div><div class="sub">あなたの式</div><div class="shiki">${esc(v)}</div></div>
+        <div><div class="sub">式の例</div><div class="shiki ex">${esc(STEPS[id])}</div></div></div>
+        <div class="fb ok" style="background:var(--lavL)"><div>答え：<b class="big" style="color:var(--lav)">${esc(ansText(q))}</b></div></div>
+        <div class="sub">自分の答えとくらべてみよう</div>
+        <div class="row"><button class="btn main" id="selfOk">あってた♡</button><button class="btn" id="selfNg">ちがった</button></div>`;
+      const fin=ok=>{document.getElementById("selfOk").disabled=true;document.getElementById("selfNg").disabled=true;judge(q,ok)};
+      document.getElementById("selfOk").onclick=()=>fin(true);
+      document.getElementById("selfNg").onclick=()=>fin(false);
+    };
+  }
+  else if(q.t==="in"){const a=document.getElementById("ans");
+    const go=()=>{const v=norm(a.value);if(!v)return;judge(q,v===norm(q.a),v)};
+    document.getElementById("go").onclick=go;a.onkeydown=e=>{if(e.key==="Enter"&&!e.isComposing)go()}}
+  else app.querySelectorAll(".ch").forEach(b=>b.onclick=()=>{
+    app.querySelectorAll(".ch").forEach(x=>{x.disabled=true;if(x.textContent===q.c[0])x.classList.add("ok")});
+    if(b.textContent!==q.c[0])b.classList.add("ng");judge(q,b.textContent===q.c[0])});
+}
+function norm(s){return s.replace(/[０-９]/g,d=>String.fromCharCode(d.charCodeAt(0)-65248)).replace(/[\s　]/g,"").replace(/(cm|Ａ|A|J|Ｊ)$/i,"")}
+function kanjiMark(user,ans){return [...user].map((c,i)=>c===ans[i]?esc(c):`<span class="x">${esc(c)}</span>`).join("")}
+function judge(q,ok,typed){
+  document.body.classList.remove("typing");
+  const p=P(q.id);p.seen++;
+  if(R.first[q.id]===undefined)R.first[q.id]=ok;
+  let grad=false;
+  if(ok){if(!R.hint){p.st++;if(p.st>=2&&!p.g){p.g=true;grad=true;R.grads.push(q.id)}}p.w=false}
+  else{p.st=0;p.w=true;if(!R.retried.has(q.id)){R.retried.add(q.id);R.queue.splice(Math.min(R.i+3,R.queue.length),0,q.id)}}
+  R.log.push(ok);save();
+  const ae=document.getElementById("ans");if(ae){ae.disabled=true;document.getElementById("go").disabled=true}
+  document.getElementById("hintBtn").hidden=true;
+  const isK=q.s==="koku";
+  const fb=document.getElementById("fb");
+  fb.innerHTML=`<div class="card"><div class="fb ${ok?"ok":"ng"} pop">
+    <div class="big">${ok?(grad?"卒業！おめでとう":"せいかい！"):"おしい！ここを覚えればOK"}</div>
+    ${!ok&&typed!==undefined&&isK?`<div>あなたの答え：<span class="kanji">${kanjiMark(typed,q.a)}</span></div>`:""}
+    <div>正解：<b>${esc(ansText(q))}</b></div>
+    <div>${esc(q.why)}</div></div>
+    ${PIC[q.id]?`<div class="pic"><div class="pictag">絵で覚えよう</div>${picSVG(q.id)}<div class="piccap">${esc(PIC[q.id].cap)}</div></div>`:""}
+    <div class="memo"><b>覚え方</b>　${esc(q.tip)}${q.chk?"<br><span class=\"sub\">言葉の使い方は教科書によってちがうことがあるよ。先生に確認してね。</span>":""}</div>
+    <button class="btn main" id="next">${R.i+1<R.queue.length?"つぎへ":"結果を見る"}</button></div>`;
+  if(ok)snd(grad?"grad":"ok");
+  if(grad)celebrate();
+  document.getElementById("next").onclick=()=>{R.i++;R.i<R.queue.length?ask():result()};
+  if(!reduce)fb.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function celebrate(){
+  if(reduce){toast("卒業！");return}
+  for(let i=0;i<18;i++){const s=document.createElement("span");s.className="fall";s.textContent=pick(["♡","★","✿"]);
+    s.style.left=Math.random()*100+"vw";s.style.color=pick(["var(--pink)","var(--lav)","var(--memoLine)"]);s.style.animationDelay=Math.random()*.4+"s";document.body.appendChild(s);setTimeout(()=>s.remove(),2000)}
+  const st=document.createElement("div");st.className="sticker";st.textContent="卒業！";document.body.appendChild(st);setTimeout(()=>st.remove(),1500);
+}
+
+// ---- 結果 ----
+function result(){
+  const ids=Object.keys(R.first),okN=ids.filter(i=>R.first[i]).length,wrong=ids.filter(i=>!R.first[i]);
+  const nm=SUBJ[R.s].nm+(R.cat?"（"+R.cat+"）":""),nick=S.nick.trim()||"ななし";
+  const shareTxt=`【5教科ノート】${nick}\n${nm} ${okN}／${ids.length}問せいかい ♡`;
+  const teachTxt=wrong.length?`教えて！ 5教科ノートの「教え合い」に入れてね → ${wrong.join(" ")}`:"";
+  app.innerHTML=`${topbar(true)}
+  <div class="card pop">
+    <h2>${nm} おつかれさま！</h2>
+    <div class="count"><b>${okN}</b><span>／${ids.length}問 せいかい</span></div>
+    <div>${okN===ids.length?"パーフェクト！この調子で卒業をめざそう。":"まちがえた問題は、次の回に先に出るよ。"}</div>
+  </div>
+  <div class="card"><h3>スコアを見せ合う</h3><div class="share" id="sh">${esc(shareTxt)}</div><button class="btn lav" id="cp1">コピーして友達に送る</button></div>
+  ${wrong.length?`<div class="card"><h3>友達に教えてもらう</h3><div class="sub">問題番号だけ送れば、友達のツールで答えと理由が見られるよ。</div><div class="share" id="tc">${esc(teachTxt)}</div><button class="btn lav" id="cp2">番号をコピー</button></div>`:""}
+  <div class="row"><button class="btn main" id="again">もう1回</button><button class="btn" id="cat">ほかの${SUBJ[R.s].nm}をやる</button><button class="btn" id="home">教科をえらぶ</button></div>`;
+  bindTop();
+  document.getElementById("cp1").onclick=()=>copy(shareTxt,document.getElementById("sh"));
+  if(wrong.length)document.getElementById("cp2").onclick=()=>copy(teachTxt,document.getElementById("tc"));
+  document.getElementById("again").onclick=()=>start(R.s,R.cat);
+  document.getElementById("cat").onclick=()=>cats(R.s);
+  document.getElementById("home").onclick=home;
+}
+function allDone(s,cat=""){
+  const nm=SUBJ[s].nm+(cat?"（"+cat+"）":"");
+  app.innerHTML=`${topbar(true)}<div class="card pop"><h2>${esc(nm)} ぜんぶ卒業！</h2>
+  <div>${mascot(SUBJ[s].prop,90)}</div><div>すごい！ほかのカテゴリにも挑戦しよう。もう一度やりたいときは、記録をリセットしてね。</div>
+  <button class="btn" id="rs">${esc(nm)}の記録をリセット</button><button class="btn" id="oc">ほかの${SUBJ[s].nm}をやる</button></div>`;
+  bindTop();
+  document.getElementById("oc").onclick=()=>cats(s);
+  document.getElementById("rs").onclick=()=>{catIds(s,cat).forEach(id=>delete S.p[id]);save();cats(s)};
+}
+
+// ---- 教え合い ----
+function teach(val){
+  app.innerHTML=`${topbar(true)}<div class="card">
+    <h2>教え合いモード</h2>
+    <label for="codes">友達から届いた番号（スペース区切り）</label>
+    <input type="text" id="codes" placeholder="例：M02 H05" value="${esc(val)}">
+    <button class="btn main" id="show">答えと理由を見る</button>
+    <div id="tout"></div></div>`;
+  bindTop();
+  const run=()=>{
+    const codes=(document.getElementById("codes").value.toUpperCase().match(/[KMESH]\d{2}/g)||[]);
+    const out=codes.map(c=>Q.find(q=>q.id===c)).filter(Boolean);
+    document.getElementById("tout").innerHTML=out.length?out.map(q=>`<div class="teachcard">
+      <span class="pill">${q.id}・${SUBJ[q.s].nm}・${esc(catOf(q.id))}</span>
+      <div><b>${esc(q.q[0])}</b></div>
+      <div>正解：<b>${esc(ansText(q))}</b></div>
+      ${STEPS[q.id]?`<div class="shiki ex">${esc(STEPS[q.id])}</div>`:""}
+      <div>${esc(q.why)}</div>
+      ${PIC[q.id]?`<div class="pic">${picSVG(q.id)}<div class="piccap">${esc(PIC[q.id].cap)}</div></div>`:""}
+      <div class="memo"><b>覚え方</b>　${esc(q.tip)}</div></div>`).join("")
+      :`<div class="sub">番号が見つからなかったよ。M02 のように「英字1つ＋数字2つ」で入れてね。</div>`;
+  };
+  document.getElementById("show").onclick=run;
+  if(val)run();
+}
+home();
+</script>
+
+</body></html>
